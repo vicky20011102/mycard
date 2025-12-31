@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>給你的一件事</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<style>
+@font-face {
+  font-family: 'Handwrite';
+  src: url('./jf-openhuninn-2.1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --bg-main: radial-gradient(circle at top, #1b2a4e, #0b0f1a);
+  --card-bg: rgba(255,255,255,0.05);
+  --text-main: #f2f2f6;
+  --accent: #9aa8ff;
+  --border: rgba(255,255,255,0.25);
+}
+
+body.cute {
+  --bg-main: linear-gradient(180deg, #fffaf3, #ffffff);
+  --card-bg: #ffffff;
+  --text-main: #3a2f2f;
+  --accent: #ff9aa2;
+  --border: rgba(0,0,0,0.1);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-main);
+  font-family: 'Handwrite', cursive;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-main);
+  transition: background 0.6s ease;
+  position: relative;
+}
+
+.card {
+  width: 92%;
+  max-width: 390px;
+  padding: 48px 28px 56px;
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.6s ease;
+  position: relative;
+  opacity: 0;
+  transform: scale(0.95);
+  animation: cardAppear 0.8s forwards;
+}
+
+.anpanman {
+  width: 80px;
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.cute .anpanman {
+  opacity: 1;
+  animation: jump 1.2s ease-in-out infinite;
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+@keyframes cardAppear {
+  to { opacity: 1; transform: scale(1); }
+}
+
+h2 {
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+  font-size: clamp(24px, 6vw, 30px);
+}
+
+p {
+  display: none;
+  font-size: clamp(20px, 5.5vw, 24px);
+  line-height: 1.9;
+  margin: 26px 0;
+  animation: fadeUp 0.9s ease forwards;
+}
+
+p.aftertaste {
+  font-size: clamp(18px, 5vw, 21px);
+  color: var(--accent);
+  margin-top: 36px;
+}
+
+button.main {
+  margin-top: 42px;
+  padding: 12px 34px;
+  font-size: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-family: 'Handwrite', cursive;
+  transition: transform 0.2s ease;
+}
+
+button.main:hover {
+  transform: scale(1.05);
+}
+
+.tools {
+  position: fixed;
+  top: env(safe-area-inset-top, 16px);
+  right: 16px;
+  display: flex;
+  gap: 14px;
+  font-size: 16px;
+  opacity: 0.75;
+}
+
+.tools span {
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.tools span:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 音樂 -->
+<audio id="bgm" loop autoplay>
+  <source src="M5000045Tg2r0WFyt3.mp3" type="audio/mpeg">
+</audio>
+
+<div class="tools">
+  <span onclick="toggleTheme()">🌙</span>
+  <span onclick="toggleMusic()">🎵</span>
+</div>
+
+<div class="card">
+  <img src="S__86638699.jpg" class="anpanman" alt="麵包超人">
+  <h2>我想了一段時間</h2>
+
+  <p style="display:block;">
+    有一件事，<br>
+    我想在新年的第一天告訴你。
+  </p>
+
+  <p>
+    之前我一直說想再等等，<br>
+    不是因為不喜歡你，<br>
+    而是我對感情比較慢、也比較認真。
+  </p>
+
+  <p>
+    但我發現，<br>
+    我不想再只站在原地了。
+  </p>
+
+  <p>
+    如果你還願意，<br>
+    我想跟你在一起。
+  </p>
+
+  <p class="aftertaste">
+    如果你願意，<br>
+    有一個小驚喜，<br>
+    我想留到我們見面的那一天。
+  </p>
+
+  <button class="main" onclick="nextStep()">繼續</button>
+</div>
+
+<script>
+let index = 1;
+const ps = document.querySelectorAll("p");
+const btn = document.querySelector("button.main");
+const music = document.getElementById("bgm");
+let playing = false;
+
+// 嘗試自動播放音樂（iOS 需第一次互動）
+window.addEventListener('click', () => {
+  if(music.paused){
+    music.play().catch(()=>{});
+  }
+},{once:true});
+
+function nextStep() {
+  if (index < ps.length) {
+    ps[index].style.display = "block";
+    index++;
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("cute");
+}
+
+function toggleMusic() {
+  if (!playing) {
+    music.play();
+    playing = true;
+  } else {
+    music.pause();
+    playing = false;
+  }
+}
+</script>
+
+</body>
+</html>
